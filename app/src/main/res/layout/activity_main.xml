@@ -17,7 +17,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:hint="Enter url"
+                android:hint="@string/enter_url"
                 android:singleLine="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:hint="Enter compression percent % "
+                android:hint="@string/enter_compression_quality"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/etUrl" />
@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="Compress Image"
+                android:text="@string/compress_image"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:background="@color/purple_500"
@@ -51,7 +51,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="Clear"
+                android:text="@string/clear"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:background="@color/purple_500"
@@ -64,8 +64,7 @@
                 android:id="@+id/ivOriginalImage"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
-                android:layout_margin="16dp"
-                android:scaleType="center"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toStartOf="@id/ivCompressImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btnCompressImage" />
@@ -74,8 +73,7 @@
                 android:id="@+id/ivCompressImage"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
-                android:layout_margin="16dp"
-                android:scaleType="center"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivOriginalImage"
                 app:layout_constraintTop_toBottomOf="@id/btnCompressImage" />
@@ -89,7 +87,27 @@
                 android:scaleType="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ivCompressImage" />
+                app:layout_constraintTop_toBottomOf="@id/tvOriginalSize" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOriginalSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toStartOf="@id/tvCompressedSize"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivOriginalImage"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCompressedSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toEndOf="@id/tvOriginalSize"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivOriginalImage"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

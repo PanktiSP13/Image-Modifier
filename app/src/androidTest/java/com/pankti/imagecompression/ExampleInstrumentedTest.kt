@@ -1,4 +1,4 @@
-package com.teachmint.imagecompression
+package com.pankti.imagecompression
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

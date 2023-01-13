@@ -1,4 +1,4 @@
-package com.teachmint.imagecompression
+package com.pankti.imagecompression
 
 import org.junit.Test
 

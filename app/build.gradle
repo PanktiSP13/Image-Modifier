@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.teachmint.imagecompression'
+    namespace 'com.pankti.imagecompression'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.teachmint.imagecompression"
+        applicationId "com.pankti.imagecompression"
         minSdk 21
         targetSdk 33
         versionCode 1
