@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ImageCompression</string>
+    <string name="enter_url">Enter url</string>
+    <string name="enter_compression_quality">Enter compression quality</string>
+    <string name="compress_image">Compress Image</string>
+    <string name="clear">Clear</string>
 </resources>
