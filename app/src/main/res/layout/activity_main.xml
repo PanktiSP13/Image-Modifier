@@ -80,6 +80,26 @@
 
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivCompressWithResizeImage"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerInside"
+                app:layout_constraintEnd_toStartOf="@id/ivCompressImage"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvOriginal" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivCompressTill1MBImage"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ivOriginalImage"
+                app:layout_constraintTop_toBottomOf="@id/tvCompressed" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivIconImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -87,28 +107,73 @@
                 android:scaleType="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvOriginalSize" />
+                app:layout_constraintTop_toBottomOf="@id/tvCompressTill1MB" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvOriginalSize"
+                android:id="@+id/tvOriginal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toStartOf="@id/tvCompressedSize"
+                android:text="@string/original"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toStartOf="@id/tvCompressed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ivOriginalImage"/>
+                app:layout_constraintTop_toBottomOf="@id/ivOriginalImage"
+                tools:ignore="SmallSp" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvCompressedSize"
+                android:id="@+id/tvCompressed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:layout_marginTop="20dp"
-                app:layout_constraintStart_toEndOf="@id/tvOriginalSize"
+                android:textSize="10sp"
+                android:text="@string/compressed_with_given_quality"
+                app:layout_constraintStart_toEndOf="@id/tvOriginal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ivOriginalImage"/>
+                app:layout_constraintTop_toBottomOf="@id/ivCompressImage"
+                tools:ignore="SmallSp" />
 
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCompressWithResize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/compress_and_resize"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toStartOf="@id/tvCompressed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivCompressWithResizeImage"
+                tools:ignore="SmallSp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCompressTill1MB"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/compress_till_1_mb"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@id/tvOriginal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivCompressTill1MBImage"
+                tools:ignore="SmallSp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvResizeOnly"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/resize_only_with_custom_width"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivIconImage"
+                tools:ignore="SmallSp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

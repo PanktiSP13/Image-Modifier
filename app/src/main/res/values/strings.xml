@@ -4,4 +4,12 @@
     <string name="enter_compression_quality">Enter compression quality</string>
     <string name="compress_image">Compress Image</string>
     <string name="clear">Clear</string>
+    <string name="compression_quality_validation">Please enter compression percent between 10 to 100</string>
+    <string name="enter_quality">Please enter compression quality</string>
+    <string name="enter_url_validation">Please enter url</string>
+    <string name="resize_only_with_custom_width">resize only with custom width</string>
+    <string name="compress_till_1_mb">compress till 1 mb</string>
+    <string name="compress_and_resize">compress and resize</string>
+    <string name="compressed_with_given_quality">Compressed with given quality</string>
+    <string name="original">Original</string>
 </resources>

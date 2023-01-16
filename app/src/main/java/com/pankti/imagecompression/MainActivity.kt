@@ -19,56 +19,72 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setClickListeners() {
-        binding.btnClear.setOnClickListener {
-            clearImage()
-        }
-
-        binding.btnCompressImage.setOnClickListener {
-            compressImage()
-        }
+        binding.btnClear.setOnClickListener { clearImage() }
+        binding.btnCompressImage.setOnClickListener { manipulateImage() }
     }
 
-    private fun compressImage() {
-        if (isValid()) {
+    private fun manipulateImage() {
+//        if (isValid()) {
 
-            ImageUtils.instance()
-                .withContext(this)
-                .customWidth(150).imageUrl(binding.etUrl.text.toString())
-                .compressionQuality(binding.etCompressionPercent.text.toString().toInt())
-                .compressImage { _original, _compressed->
-                    binding.ivOriginalImage.setImageBitmap(_original)
-                    binding.ivCompressImage.setImageBitmap(_compressed)
-                }
-                .resizeImage {
-                    binding.ivIconImage.setImageBitmap(it)
-                }
+        val url = binding.etUrl.text.toString()
+        val quality = binding.etCompressionPercent.text.toString()
 
+        Glide.with(this).load(url).into(binding.ivOriginalImage)
 
+        // compress image
+        ImageModifier.compress(this, url, if (quality.isNotEmpty()) quality.toInt() else 75) {
+            if (it.isSuccessFullyModified) binding.ivCompressImage.setImageBitmap(it.compressedImage)
+            else showToast(it.errorMessage ?: "")
         }
+
+        // resize image
+        ImageModifier.resize(this, url, 100) {
+            if (it.isSuccessFullyModified) binding.ivIconImage.setImageBitmap(it.resizedImage)
+            else showToast(it.errorMessage ?: "")
+        }
+
+
+        // resize and compress image
+        ImageModifier.resizeAndCompress(this, url, if (quality.isNotEmpty()) quality.toInt() else 75, 150) {
+            if (it.isSuccessFullyModified) binding.ivCompressWithResizeImage.setImageBitmap(it.resizedAndCompressedImage)
+            else showToast(it.errorMessage ?: "")
+        }
+
+        // compress till 1 mb
+        ImageModifier.compressTill1MB(this, url) {
+            if (it.isSuccessFullyModified) binding.ivCompressTill1MBImage.setImageBitmap(it.compressedImage)
+            else showToast(it.errorMessage ?: "")
+        }
+
+//        }
     }
 
 
     private fun clearImage() {
         binding.etUrl.setText("")
         binding.etCompressionPercent.setText("")
-        binding.tvOriginalSize.text = ""
-        binding.tvCompressedSize.text =""
         Glide.with(this).load(R.color.white).into(binding.ivOriginalImage)
         Glide.with(this).load(R.color.white).into(binding.ivCompressImage)
+        Glide.with(this).load(R.color.white).into(binding.ivCompressWithResizeImage)
+        Glide.with(this).load(R.color.white).into(binding.ivCompressTill1MBImage)
         Glide.with(this).load(R.color.white).into(binding.ivIconImage)
     }
 
     private fun isValid(): Boolean {
         return if (binding.etUrl.text.toString().trim().isEmpty()) {
-            Toast.makeText(this, "Please enter url", Toast.LENGTH_LONG).show()
+            showToast(getString(R.string.enter_url_validation))
             false
         } else if (binding.etCompressionPercent.text.toString().trim().isEmpty()) {
-            Toast.makeText(this, "Please enter compression percent", Toast.LENGTH_LONG).show()
+            showToast(getString(R.string.enter_quality))
             false
         } else if (binding.etCompressionPercent.text.toString().isNotEmpty() && ((binding.etCompressionPercent.text.toString()
                 .toInt() > 100) || (binding.etCompressionPercent.text.toString().toInt() < 10))) {
-            Toast.makeText(this, "Please enter compression percent between 10 to 100", Toast.LENGTH_LONG).show()
+            showToast(getString(R.string.compression_quality_validation))
             false
         } else true
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }
