@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.pankti.imagecompression.ImageUtils.ImageUtilsConstant.DEFAULT_COMPRESSION_QUALITY
+import com.pankti.imagecompression.ImageUtils.ImageUtilsConstant.DEFAULT_FILE_NAME
 import com.pankti.imagecompression.ImageUtils.ImageUtilsConstant.DEFAULT_RESIZE_MINIMUM_WIDTH
 import com.pankti.imagecompression.ImageUtils.ImageUtilsConstant.TAG
 import java.io.ByteArrayOutputStream
@@ -33,6 +34,7 @@ class ImageUtils private constructor() {
 
         const val DEFAULT_COMPRESSION_QUALITY = 100
         const val DEFAULT_RESIZE_MINIMUM_WIDTH = 50
+        val DEFAULT_FILE_NAME = "IMG_" + System.currentTimeMillis() + ".jpg"
     }
 
     private var context: Context? = null
@@ -40,6 +42,8 @@ class ImageUtils private constructor() {
     private var compressionQuality = DEFAULT_COMPRESSION_QUALITY
     private var customWidth: Int = DEFAULT_RESIZE_MINIMUM_WIDTH
 
+    private var imageFile = File(DEFAULT_FILE_NAME)
+    private var isImageFileAvailable = false
 
     fun withContext(context: Context): ImageUtils {
         this.context = context
@@ -48,6 +52,12 @@ class ImageUtils private constructor() {
 
     fun imageUrl(url: String): ImageUtils {
         this.imageUrl = url
+        return this@ImageUtils
+    }
+
+    fun imageFile(imageFile: File): ImageUtils {
+        this.imageFile = imageFile
+        isImageFileAvailable = true
         return this@ImageUtils
     }
 
@@ -81,100 +91,45 @@ class ImageUtils private constructor() {
     }
 
 
-    private fun compress(onCompress: (ModifiedImageData) -> Unit) {
-        try {
-            val fileName = "compressed-image-${compressionQuality}-" + imageUrl.substring(imageUrl.lastIndexOf('/') + 1, imageUrl.length)
-
-            Glide.with(context!!).asBitmap().load(imageUrl).into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val compressedBitmap = saveAndCompressBitmap(fileName, resource)
-
-                    onCompress(
-                        ModifiedImageData(
-                            isSuccessFullyModified = true, originalImage = resource, compressedImage = compressedBitmap))
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {}
-            })
-
-        } catch (e: Exception) {
-            onCompress(ModifiedImageData(errorMessage = e.message))
-            Log.e(TAG, "compressImage: " + e.message.toString())
+    fun compressImgWithCertainSize(onCompress: (ModifiedImageData) -> Unit) {
+        createBitmap {
+            val compressedBitmap = compressImageToCertainSize(it)
+            onCompress(ModifiedImageData(isSuccessFullyModified = true, originalImage = it, compressedImage = compressedBitmap))
         }
     }
 
-    private fun resize(onResize: (ModifiedImageData) -> Unit): ImageUtils {
-        try {
-            Glide.with(context!!).asBitmap().load(imageUrl).into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-
-                    val newHeight = ((customWidth * resource.height) / resource.width)
-                    val scaled = Bitmap.createScaledBitmap(resource, customWidth, newHeight, true)
-                    Log.i(TAG, "OnResizeImage width : ${scaled.width} height : ${scaled.height}")
-                    onResize(ModifiedImageData(originalImage = resource, resizedImage = scaled, isSuccessFullyModified = true))
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {}
-            })
-
-        } catch (e: Exception) {
-            onResize(ModifiedImageData(errorMessage = e.message.toString()))
-            Log.e(TAG, "resizeImage: " + e.message.toString())
+    private fun compress(onCompress: (ModifiedImageData) -> Unit) {
+        createBitmap {
+            val compressedBitmap = saveAndCompressBitmap(fileName(), it)
+            onCompress(ModifiedImageData(isSuccessFullyModified = true, originalImage = it, compressedImage = compressedBitmap))
         }
-        return this
+    }
+
+    private fun resize(onResize: (ModifiedImageData) -> Unit) {
+        createBitmap {
+            val newHeight = ((customWidth * it.height) / it.width)
+            val scaled = Bitmap.createScaledBitmap(it, customWidth, newHeight, true)
+            Log.e(TAG, "OnResizeImage width : " + scaled.width + " height : " + scaled.height)
+            onResize(ModifiedImageData(originalImage = it, resizedImage = scaled, isSuccessFullyModified = true))
+        }
     }
 
     private fun resizeAndCompress(onModifiedImage: (ModifiedImageData) -> Unit = {}) {
-        try {
-            Glide.with(context!!).asBitmap().load(imageUrl).into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+        createBitmap {
 
-                    val newHeight = ((customWidth * resource.height) / resource.width)
-                    val scaled = Bitmap.createScaledBitmap(resource, customWidth, newHeight, true)
+            val newHeight = ((customWidth * it.height) / it.width)
+            val scaled = Bitmap.createScaledBitmap(it, customWidth, newHeight, true)
+            val compressedBitmap = saveAndCompressBitmap(fileName(), scaled)
 
-                    val fileName = "compressed-icon-${compressionQuality}-" + imageUrl.substring(imageUrl.lastIndexOf('/') + 1, imageUrl.length)
-                    val compressedBitmap = saveAndCompressBitmap(fileName, scaled)
-
-                    onModifiedImage(
-                        ModifiedImageData(
-                            isSuccessFullyModified = true,
-                            originalImage = resource,
-                            resizedImage = scaled,
-                            compressedImage = compressedBitmap,
-                            resizedAndCompressedImage = compressedBitmap))
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {}
-            })
-        } catch (e: java.lang.Exception) {
-            onModifiedImage(ModifiedImageData(errorMessage = e.message.toString()))
-            Log.e(TAG, "resizeImage: " + e.message.toString())
-            throw e
+            onModifiedImage(
+                ModifiedImageData(
+                    isSuccessFullyModified = true,
+                    originalImage = it,
+                    resizedImage = scaled,
+                    compressedImage = compressedBitmap,
+                    resizedAndCompressedImage = compressedBitmap))
         }
     }
-
-    fun compressImgWithCertainSize(onCompress: (ModifiedImageData) -> Unit) {
-        try {
-
-            Glide.with(context!!).asBitmap().load(imageUrl).into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-
-                    val compressedBitmap = compressImageToCertainSize(resource)
-
-                    onCompress(
-                        ModifiedImageData(
-                            isSuccessFullyModified = true, originalImage = resource, compressedImage = compressedBitmap))
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {}
-            })
-
-        } catch (e: Exception) {
-            onCompress(ModifiedImageData(errorMessage = e.message))
-            Log.e(TAG, "compressImage: " + e.message.toString())
-        }
-    }
-
 
     private fun compressImageToCertainSize(bitmap: Bitmap): Bitmap {
         val compressedImageFile = compressImgToCertainSize(bitmap)
@@ -187,7 +142,7 @@ class ImageUtils private constructor() {
             file.delete()
         }
 
-        val maxImgSize = 1024 * 1024
+        val maxImgSize = 1024 * 1024 // 1 mb
         var streamLength = maxImgSize
         var compressQuality = 105
         val bmpStream = ByteArrayOutputStream()
@@ -205,7 +160,7 @@ class ImageUtils private constructor() {
             streamLength = bmpPicByteArray.size
             if (BuildConfig.DEBUG) {
                 Log.d(TAG, "Quality: $compressQuality")
-                Log.d(TAG, "Size: ${(streamLength.toFloat() / 1024)} kb")
+                Log.d(TAG, "Size: " + (streamLength.toFloat() / 1024) + " kb")
             }
         }
 
@@ -254,7 +209,7 @@ class ImageUtils private constructor() {
         return if (context == null) {
             result("Context required")
             false
-        } else if (imageUrl.isEmpty()) {
+        } else if (!isImageFileAvailable && imageUrl.isEmpty()) {
             result("Image url not found")
             false
         } else if (compressionQuality > 100 || compressionQuality < 10) {
@@ -267,6 +222,34 @@ class ImageUtils private constructor() {
     }
 
     inner class ModifiedImageData(
-        val url: String = imageUrl, val originalImage: Bitmap? = null, val compressedImage: Bitmap? = null, val resizedImage: Bitmap? = null,
+        val originalImage: Bitmap? = null, val compressedImage: Bitmap? = null, val resizedImage: Bitmap? = null,
         val resizedAndCompressedImage: Bitmap? = null, val isSuccessFullyModified: Boolean = false, val errorMessage: String? = "")
+
+    private fun createBitmap(onSuccess: (Bitmap) -> Unit = {}) {
+        try {
+            val image = if (isImageFileAvailable) imageFile else imageUrl
+            Glide.with(context!!).asBitmap().load(image).into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    onSuccess(resource)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
+
+        } catch (e: Exception) {
+            Log.e(TAG, "createBitmap: " + e.message.toString())
+        }
+    }
+
+
+    /**
+     *  Check extension and create file name
+     * */
+    private fun fileName(): String {
+        return when (if (isImageFileAvailable) { imageFile.extension } else { File(imageUrl).extension }) {
+            "png" -> "IMG_" + System.currentTimeMillis() + ".png"
+            "jpeg" -> "IMG_" + System.currentTimeMillis() + ".jpeg"
+            else -> DEFAULT_FILE_NAME
+        }
+    }
 }
