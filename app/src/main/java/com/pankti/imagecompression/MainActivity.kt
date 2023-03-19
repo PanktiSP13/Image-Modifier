@@ -24,8 +24,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun manipulateImage() {
-//        if (isValid()) {
-
         val url = binding.etUrl.text.toString()
         val quality = binding.etCompressionPercent.text.toString()
 
@@ -45,7 +43,8 @@ class MainActivity : AppCompatActivity() {
 
 
         // resize and compress image
-        ImageModifier.resizeAndCompress(this, url, if (quality.isNotEmpty()) quality.toInt() else 75, 150) {
+        ImageModifier.resizeAndCompress(this, url,
+            if (quality.isNotEmpty()) quality.toInt() else 75, 150) {
             if (it.isSuccessFullyModified) binding.ivCompressWithResizeImage.setImageBitmap(it.resizedAndCompressedImage)
             else showToast(it.errorMessage ?: "")
         }
@@ -55,10 +54,7 @@ class MainActivity : AppCompatActivity() {
             if (it.isSuccessFullyModified) binding.ivCompressTill1MBImage.setImageBitmap(it.compressedImage)
             else showToast(it.errorMessage ?: "")
         }
-
-//        }
     }
-
 
     private fun clearImage() {
         binding.etUrl.setText("")
@@ -68,20 +64,6 @@ class MainActivity : AppCompatActivity() {
         Glide.with(this).load(R.color.white).into(binding.ivCompressWithResizeImage)
         Glide.with(this).load(R.color.white).into(binding.ivCompressTill1MBImage)
         Glide.with(this).load(R.color.white).into(binding.ivIconImage)
-    }
-
-    private fun isValid(): Boolean {
-        return if (binding.etUrl.text.toString().trim().isEmpty()) {
-            showToast(getString(R.string.enter_url_validation))
-            false
-        } else if (binding.etCompressionPercent.text.toString().trim().isEmpty()) {
-            showToast(getString(R.string.enter_quality))
-            false
-        } else if (binding.etCompressionPercent.text.toString().isNotEmpty() && ((binding.etCompressionPercent.text.toString()
-                .toInt() > 100) || (binding.etCompressionPercent.text.toString().toInt() < 10))) {
-            showToast(getString(R.string.compression_quality_validation))
-            false
-        } else true
     }
 
     private fun showToast(message: String) {

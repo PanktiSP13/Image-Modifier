@@ -9,15 +9,12 @@ object ImageModifier {
      * image modify using image url
      * */
     fun compress(context: Context,url : String,quality: Int, OnCompressCallback : (ImageUtils.ModifiedImageData) -> Unit) {
-        ImageUtils.init().withContext(context).compressionQuality(quality)
-            .imageUrl(url).compressImage { OnCompressCallback(it)}
+        ImageUtils.init().withContext(context).compressionQuality(quality).imageUrl(url).compressImage { OnCompressCallback(it)}
     }
-
 
     fun resize(context: Context,url: String,newWidth:Int, OnResizeCallback : (ImageUtils.ModifiedImageData) -> Unit){
         ImageUtils.init().withContext(context).imageUrl(url).customWidth(newWidth).resizeImage { OnResizeCallback(it) }
     }
-
 
     fun resizeAndCompress(context: Context,url: String,quality: Int,
                           newWidth: Int, OnImageModifiedCallback : (ImageUtils.ModifiedImageData) -> Unit){
@@ -38,11 +35,11 @@ object ImageModifier {
             .imageFile(imageFile).compressImage { OnCompressCallback(it)}
     }
 
-    fun resize(context: Context,file: File,newWidth:Int, OnResizeCallback : (ImageUtils.ModifiedImageData) -> Unit){
+    fun resize(context: Context, file: File, newWidth:Int, OnResizeCallback : (ImageUtils.ModifiedImageData) -> Unit){
         ImageUtils.init().withContext(context).imageFile(file).customWidth(newWidth).resizeImage { OnResizeCallback(it) }
     }
 
-    fun resizeAndCompress(context: Context,file: File,quality: Int,
+    fun resizeAndCompress(context: Context, file: File, quality: Int,
                           newWidth: Int, OnImageModifiedCallback : (ImageUtils.ModifiedImageData) -> Unit){
 
         ImageUtils.init().withContext(context).imageFile(file)
@@ -51,8 +48,7 @@ object ImageModifier {
     }
 
 
-    fun compressTill1MB(context: Context,file: File,OnCompressCallback : (ImageUtils.ModifiedImageData) -> Unit){
+    fun compressTill1MB(context: Context, file: File, OnCompressCallback : (ImageUtils.ModifiedImageData) -> Unit){
         ImageUtils.init().withContext(context).imageFile(file).compressImgWithCertainSize { OnCompressCallback(it)}
     }
-
 }
