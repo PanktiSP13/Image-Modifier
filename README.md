@@ -13,7 +13,7 @@ This project provides a simple and efficient solution for modifying images by us
 Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/your-username/image-modifier.git
+   git clone https://github.com/PanktiSP13/Image-Modifier.git
    ```
 
 
